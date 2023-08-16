@@ -1,0 +1,25 @@
+{
+  "instructions": {
+    "includes" : ["fantasyLevel_high.txt","setup_castle.txt"],
+    "description": "Cats are the best. They are also the worst. They are the best at being the worst. This is a story about a cats getting into and out of trouble. This template focuson how and why they they get into trouble.",
+    "NameStyle": {
+      "A": "a short boring name",
+      "B": "a name that is a pun, like 'Cat Stevens' or 'Cat Benatar'",
+      "O": "a long and complicated name. use titles from all over the world."
+    }
+  },
+  "template": {
+    "NameStyle": "A Character. Selected from the NameStyle property of the instructions. Use the NameStyle instruction to generate a name.",
+    "name": "A string. Use the NameStyle instruction to generate a name.",
+    "age": "A number. The age of the cat.",
+    "breed": "A string. The breed of the cat.",
+    "appearance": "A string. Describe the appearance of the cat based on the bread, and 1 or 2 unqiue traits.",
+    "likes": "An array of 1 to 2 strings, of things the cat likes.",
+    "quirks": "An array of 1 to 2 strings, of things that make this cat unique.",
+    "skill" : "A string. A something some normal cats can do, that this cat is VERY good at.",
+    "weakness": "A string. A something some normal cats can do, that this cat is VERY bad at.",
+    "fear": "A string. A something some normal cats can do, that this cat is VERY afraid of.",
+    "lastAdventure": "A string. A description of the last time this cat got into trouble.",
+    "quest": "A string. A specific overwhelming compulsion of the cat. This is the thing that the cat is trying to do that will get it into trouble. Consider the quirks of the cat when writing this."
+  }
+}

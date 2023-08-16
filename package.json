@@ -1,0 +1,17 @@
+{
+  "name": "your-project",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha --recursive meathooks/tests"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "easygpt": "^1.6.2",
+    "uuid": "^9.0.0"
+  }
+}

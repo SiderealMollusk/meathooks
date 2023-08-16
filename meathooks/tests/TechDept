@@ -1,0 +1,10 @@
+Generators should not have there down directoy because they collapsed into a single file.
+I just can't stomach reworking the tests
+
+Test don't cover populating include files. I did have a wierd bug where the file contents were empty at in the first element, and then combined into the second
+I expect it will wash out because if it isn't there the issues will be super visable.
+
+Listed project not tested
+
+instantiating meathooks should allow for setting the project
+
