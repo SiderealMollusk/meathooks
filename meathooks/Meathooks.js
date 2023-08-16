@@ -206,17 +206,33 @@ class Generator {
 
   Generate(count, api = 'openai') {
     if (api !== 'openai') {
-      // Someday we might support other APIs
-      return new MKResult({ action: 'Generate', success: false, message: `No such API '${api}'` });
+      return Promise.resolve(new MKResult({ action: 'Generate', success: false, message: `No such API '${api}'` }));
     }
-    
+  
     const preamble = "The following contains JSON describing the proper format for generating " + this.name + ":\n\n";
     const postamble = "\n\nYour Task: follow the instructions and generate " + count + " instances of " + this.name + "\n\n";
     const imperative = "This is a machine-to-machine interaction. It is imperative you reply only with JSON.\n\n";
-    
+  
     const prompt = JSON.stringify(this);
-    MKOpenAI.Generate(preamble + prompt + postamble + imperative);
-    
+    return MKOpenAI.Generate(preamble + prompt + postamble + imperative);
+  }
+
+  async make(delay = 3000) {
+    try {
+      const delayMilliseconds = delay; // Simulate a 3-second network call delay
+      console.log('Generating content...');
+      
+      await new Promise(resolve => setTimeout(resolve, delayMilliseconds)); // Simulate network delay
+
+      const generatedMessage = await this.Generate(1); // Generate one instance
+      // Do whatever you want with the generated message here
+      console.log('Generated Message:', generatedMessage);
+
+      // Your custom logic goes here
+
+    } catch (error) {
+      console.error('Error generating content:', error);
+    }
   }
 }
 
