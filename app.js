@@ -9,10 +9,9 @@ res = meathooks.loadGenerator('cats');
 let catGen;
 if (res.success) { catGen = res.data; } else { console.log(res.message); return; }
 
-catGen.Generate().then(result => {
+catGen.Generate(2).then(result => {
     console.log('Cat generation result');
-    console.log(result.data.choices[0]);
+    console.log(result.data);
   }).catch(error => {
     console.error('Cat generation error:', error);
-
 });

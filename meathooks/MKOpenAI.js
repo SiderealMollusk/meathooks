@@ -1,6 +1,9 @@
 require('dotenv').config();
 const axios = require('axios'); // You might need to install axios using npm or yarn
 const apiKey = process.env.API_CHATGP;
+
+/// <summary> Accept a Prompt and returns text. It should encapsolate everything about working with OpenAI  </summary>
+/// <param name="prompt">The prompt to send to OpenAI</param>
 const Generate = async function (prompt) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -26,8 +29,7 @@ const Generate = async function (prompt) {
             }
           }
         );
-        let mkResponse = response.data.choices[0];
-        resolve(response.data); // Resolve the Promise with the generated message
+        resolve(response.data.choices[0].message.content);
       } catch (error) {
         reject(error); // Reject the Promise with the error
       }
