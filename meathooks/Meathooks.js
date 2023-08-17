@@ -20,7 +20,7 @@ class Meathooks {
     const projectDir = path.join(this.projectsDir, projectName);
     const generatorsDir = path.join(projectDir, 'generators');
     const assetsDir = path.join(projectDir, 'assets');
-    const rulesDir = path.join(projectDir, 'rules');
+    const rulesDir = path.join(projectDir, 'includes');
 
     // Check if the project directory already exists
     if (fs.existsSync(projectDir)) {

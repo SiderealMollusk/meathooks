@@ -40,7 +40,7 @@ describe('Meathooks Tests: Project Functions', function () {
     meathooks.createProject(projectName);
     assert.isTrue(fs.existsSync(path.join(projectsDir, projectName, 'generators')), 'Generators directory should exist');
     assert.isTrue(fs.existsSync(path.join(projectsDir, projectName, 'assets')), 'Assets directory should exist');
-    assert.isTrue(fs.existsSync(path.join(projectsDir, projectName, 'rules')), 'Rules directory should exist');
+    assert.isTrue(fs.existsSync(path.join(projectsDir, projectName, 'includes')), 'Includes directory should exist');
   });
 
   it('should not create an existing project', function() {
