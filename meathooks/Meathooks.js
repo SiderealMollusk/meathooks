@@ -193,7 +193,6 @@ class Meathooks {
     return new MKResult({ action: 'generatorFactory', success: true, message: `Generator '${generatorName}' successfully created from disk.`, data: generator });
   }
 
-  
 }
 
 class Generator {
@@ -204,35 +203,39 @@ class Generator {
     this.template = data.template;
   }
 
-  Generate(count, api = 'openai') {
+  /// <summary> Calls out to an LLM </summary>
+  /// <param name="config"> The configuration object. </param>
+  /// <typeparam name="config.api"> The api to use. </typeparam>
+  /// <typeparam name="config.count"> The number of prompts to generate. </typeparam>
+  async Generate(config = {}) {
+    const api = config.api || 'openai';
+    const count = config.count || 1;
+
+    // someday we might have multiple apis
     if (api !== 'openai') {
       return Promise.resolve(new MKResult({ action: 'Generate', success: false, message: `No such API '${api}'` }));
     }
-  
+
     const preamble = "The following contains JSON describing the proper format for generating " + this.name + ":\n\n";
     const postamble = "\n\nYour Task: follow the instructions and generate " + count + " instances of " + this.name + "\n\n";
     const imperative = "This is a machine-to-machine interaction. It is imperative you reply only with JSON.\n\n";
   
     const prompt = JSON.stringify(this);
-    return MKOpenAI.Generate(preamble + prompt + postamble + imperative);
+    try {
+      const generatedMessage = await MKOpenAI.Generate(preamble + prompt + postamble + imperative);
+      return new MKResult({ action: 'Generate', success: true, message: "Response From OpenAI", data: generatedMessage });
+    } catch (error) {
+      return new MKResult({ action: 'Generate', success: false, message: error.message });
+    }
   }
 
-  async make(delay = 3000) {
-    try {
-      const delayMilliseconds = delay; // Simulate a 3-second network call delay
-      console.log('Generating content...');
-      
-      await new Promise(resolve => setTimeout(resolve, delayMilliseconds)); // Simulate network delay
-
-      const generatedMessage = await this.Generate(1); // Generate one instance
-      // Do whatever you want with the generated message here
-      console.log('Generated Message:', generatedMessage);
-
-      // Your custom logic goes here
-
-    } catch (error) {
-      console.error('Error generating content:', error);
-    }
+  saveResponse(response) {
+    console.log("Saving");
+    console.log(response);
+  }
+  logError(error) {
+    console.log("Error");
+    console.log(error);
   }
 }
 
