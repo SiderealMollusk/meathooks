@@ -1,9 +1,9 @@
 require('dotenv').config();
 const axios = require('axios'); // You might need to install axios using npm or yarn
-
 const apiKey = process.env.API_CHATGP;
 const Generate = async function (prompt) {
-    try {
+    return new Promise(async (resolve, reject) => {
+      try {
         const response = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           {
@@ -11,7 +11,7 @@ const Generate = async function (prompt) {
             messages: [
               {
                 role: 'system',
-                content: 'You are a helpful assistant.' // Initial system message
+                content: 'You can only reply with well formated json' // Initial system message
               },
               {
                 role: 'user',
@@ -26,17 +26,12 @@ const Generate = async function (prompt) {
             }
           }
         );
-    
-        // Log the response for debugging purposes
-        console.log('OpenAI Response:', response.data.choices[0].message.content);
-    
-        // Extract the generated message from the response
-        const generatedMessage = response.data.choices[0].message.content;
-        return generatedMessage;
+        let mkResponse = response.data.choices[0];
+        resolve(response.data); // Resolve the Promise with the generated message
       } catch (error) {
-        console.error('Error generating text:', error);
-        return null;
+        reject(error); // Reject the Promise with the error
       }
-}
+    });
+  };
 
 module.exports = { Generate };

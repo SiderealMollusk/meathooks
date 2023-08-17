@@ -8,8 +8,11 @@ res = meathooks.setActiveProject('SaveTheCatApp');
 res = meathooks.loadGenerator('cats');
 let catGen;
 if (res.success) { catGen = res.data; } else { console.log(res.message); return; }
-catGen.make(1000).then((result) => {
-    console.log("Call back on app.js");
-    console.log(result);
-});
 
+catGen.Generate().then(result => {
+    console.log('Cat generation result');
+    console.log(result.data.choices[0]);
+  }).catch(error => {
+    console.error('Cat generation error:', error);
+
+});
