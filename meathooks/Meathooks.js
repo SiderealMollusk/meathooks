@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const {MKResult, MKLLMQuest} = require('./DataClasses.js');
+const extractJson = require('extract-json-from-string');
 const MKOpenAI = require('./MKOpenAI.js');
 
 /// <summary> Meathooks is the main class for interacting with the meathooks library. </summary>
@@ -223,7 +224,11 @@ class Generator {
     const prompt = JSON.stringify(this);
     try {
       const generatedMessage = await MKOpenAI.Generate(preamble + prompt + postamble + imperative);
-      return new MKResult({ action: 'Generate', success: true, message: "Response From OpenAI", data: generatedMessage });
+      if (typeof generatedMessage === 'string') {
+        return new MKResult({ action: 'Generate', success: true, message: "Response From OpenAI", data: extractJson(generatedMessage) });
+      } else {
+        return new MKResult({ action: 'Generate', success: false, message: "Response From MKOpenAI was not a string", data: generatedMessage });
+      }
     } catch (error) {
       return new MKResult({ action: 'Generate', success: false, message: error.message });
     }
