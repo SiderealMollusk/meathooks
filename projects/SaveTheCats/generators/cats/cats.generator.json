@@ -1,0 +1,24 @@
+{
+  "instructions": {
+    "includes" : ["genre.txt"],
+    "description": "Cats get curious, emotionally and physically reactive and impulsive. They are obseive and get into trouble",
+    "NameSilliness": {
+      "0": "a short boring name",
+      "1": "a edgy but adorable name",
+      "2": "a silly random name",
+      "3": "a name that is a pun, like 'Cat Stevens' or 'Cat Benatar'",
+      "4": "a long and complicated name. use titles from all over the world."
+    }
+  },
+  "template": {
+    "name": "A string. Use the NameSilliness instruction to generate a name.",
+    "nameSilliness": "A number. Use the NameSilliness instruction to generate a name.",
+    "age": "A number. The age of the cat.",
+    "breed": "A string. The breed of the cat.",
+    "skill" : "A string. A something some normal cats can do, that this cat is VERY good at.",
+    "weakness": "A string. A something some normal cats can do, that this cat is VERY bad at.",
+    "Personality": "A string. A description of the cat's personality. Look to the includes for inspiration.",
+    "lastAdventure": "A string.  Look to the includes for inspiration.",
+    "quest": "A string.  Look to the includes for inspiration."
+  }
+}

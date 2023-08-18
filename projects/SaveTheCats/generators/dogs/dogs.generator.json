@@ -1,0 +1,12 @@
+{
+  "instructions": {
+    "includes": [],
+    "description": "Dogs are man's best friend. They used to be wolves. Now they are all different sizes."
+  },
+  "template": {
+    "name": "A string. The name of the dog. Should be very silly.",
+    "size": "A string. The size of the dog.",
+    "age": "A number. The age of the dog.",
+    "fears": "An array of strings. The fears of the dog."
+  }
+}

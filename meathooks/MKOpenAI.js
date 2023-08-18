@@ -1,45 +1,39 @@
 require('dotenv').config();
 const axios = require('axios'); // You might need to install axios using npm or yarn
-
 const apiKey = process.env.API_CHATGP;
+
+/// <summary> Accept a Prompt and returns text. It should encapsolate everything about working with OpenAI  </summary>
+/// <param name="prompt">The prompt to send to OpenAI</param>
 const Generate = async function (prompt) {
-    Prompt(prompt);
-}
-const Prompt = async function (prompt) {
-  try {
-    const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-3.5-turbo', // Use the appropriate model
-        messages: [
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
           {
-            role: 'system',
-            content: 'You are a helpful assistant.' // Initial system message
+            model: 'gpt-3.5-turbo', // Use the appropriate model
+            messages: [
+              {
+                role: 'system',
+                content: 'You can only reply with well formated json' // Initial system message
+              },
+              {
+                role: 'user',
+                content: prompt // User message or prompt
+              }
+            ]
           },
           {
-            role: 'user',
-            content: prompt // User message or prompt
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${apiKey}`
+            }
           }
-        ]
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`
-        }
+        );
+        resolve(response.data.choices[0].message.content);
+      } catch (error) {
+        reject(error); // Reject the Promise with the error
       }
-    );
-
-    // Log the response for debugging purposes
-    console.log('OpenAI Response:', response.data.choices[0].message.content);
-
-    // Extract the generated message from the response
-    const generatedMessage = response.data.choices[0].message.content;
-    return generatedMessage;
-  } catch (error) {
-    console.error('Error generating text:', error);
-    return null;
-  }
-};
+    });
+  };
 
 module.exports = { Generate };

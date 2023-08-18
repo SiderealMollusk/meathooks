@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const {MKResult, MKLLMQuest} = require('./DataClasses.js');
+const extractJson = require('extract-json-from-string');
 const MKOpenAI = require('./MKOpenAI.js');
 
 /// <summary> Meathooks is the main class for interacting with the meathooks library. </summary>
@@ -19,7 +20,7 @@ class Meathooks {
     const projectDir = path.join(this.projectsDir, projectName);
     const generatorsDir = path.join(projectDir, 'generators');
     const assetsDir = path.join(projectDir, 'assets');
-    const rulesDir = path.join(projectDir, 'rules');
+    const rulesDir = path.join(projectDir, 'includes');
 
     // Check if the project directory already exists
     if (fs.existsSync(projectDir)) {
@@ -178,7 +179,7 @@ class Meathooks {
     try {
       generatorContent = JSON.parse(fs.readFileSync(generatorFile));
     } catch (err) {
-      return new MKResult({ action: 'generatorFactory', success: false, message: `Generator '${generatorName}' file is not valid JSON.`});
+      return new MKResult({ action: 'loadGenerator', success: false, message: `Generator '${generatorName}' file is not valid JSON.`});
     }
 
     //Not covered by test below this line;
@@ -189,11 +190,10 @@ class Meathooks {
       populatedIncludes.push(includeContent);
     }
     generatorContent.instructions.includes = populatedIncludes;
-    let generator = new Generator(generatorContent, generatorName,generatorDir);
-    return new MKResult({ action: 'generatorFactory', success: true, message: `Generator '${generatorName}' successfully created from disk.`, data: generator });
+    let generator = new Generator(generatorContent, generatorName, generatorDir);
+    return new MKResult({ action: 'loadGenerator', success: true, message: `Generator '${generatorName}' successfully created from disk.`, data: generator });
   }
 
-  
 }
 
 class Generator {
@@ -204,19 +204,97 @@ class Generator {
     this.template = data.template;
   }
 
-  Generate(count, api = 'openai') {
+  /// <summary> Calls out to an LLM </summary>
+  /// <param name="config"> The configuration object. </param>
+  /// <typeparam name="config.api"> The api to use. </typeparam>
+  /// <typeparam name="config.count"> The number of prompts to generate. </typeparam>
+  async Generate(config = {}) {
+    const api = config.api || 'openai';
+    const count = config.count || 1;
+
+    // someday we might have multiple apis
     if (api !== 'openai') {
-      // Someday we might support other APIs
-      return new MKResult({ action: 'Generate', success: false, message: `No such API '${api}'` });
+      return Promise.resolve(new MKResult({ action: 'Generate', success: false, message: `No such API '${api}'` }));
     }
-    
+
     const preamble = "The following contains JSON describing the proper format for generating " + this.name + ":\n\n";
     const postamble = "\n\nYour Task: follow the instructions and generate " + count + " instances of " + this.name + "\n\n";
     const imperative = "This is a machine-to-machine interaction. It is imperative you reply only with JSON.\n\n";
-    
+  
     const prompt = JSON.stringify(this);
-    MKOpenAI.Generate(preamble + prompt + postamble + imperative);
+    try {
+      const generatedMessage = await MKOpenAI.Generate(preamble + prompt + postamble + imperative);
+      if (typeof generatedMessage === 'string') {
+        let generatedObject = extractJson(generatedMessage);
+        let toAppend = this.FindObjectsWithExactKeys(generatedObject, this.template);
+        this.AppendAssetsToDisk(toAppend);
+        return new MKResult({ action: 'Generate', success: true, message: "Response From OpenAI", data: generatedObject });
+      } else {
+        return new MKResult({ action: 'Generate', success: false, message: "Response From MKOpenAI was not a string", data: generatedMessage });
+      }
+    } catch (error) {
+      return new MKResult({ action: 'Generate', success: false, message: error.message });
+    }
+  }
+  FindObjectsWithExactKeys(source, template) {
+    const matches = [];
+
+    function hasExactKeys(candidate, template) {
+        const candidateKeys = Object.keys(candidate);
+        const templateKeys = Object.keys(template);
+        
+        return candidateKeys.length === templateKeys.length &&
+               candidateKeys.every(key => templateKeys.includes(key));
+    }
+
+    function search(obj) {
+        if (typeof obj === 'object') {
+            if (hasExactKeys(obj, template)) {
+                matches.push(obj);
+            }
+
+            for (const key in obj) {
+                search(obj[key]);
+            }
+        }
+    }
+
+    search(source);
+    return matches;
+}
+
+  AppendAssetsToDisk(unsavedData) {
+    const assetFilePath = path.join(this.directory, '..', '..', 'assets', this.name + '.assets.json');
     
+    // Read existing asset data if the file exists, otherwise create an empty array
+    let existingData = [];
+    if (fs.existsSync(assetFilePath)) {
+        const fileContent = fs.readFileSync(assetFilePath, 'utf8');
+        try {
+            existingData = JSON.parse(fileContent);
+        } catch (error) {
+            console.error('Error parsing existing asset data:', error);
+        }
+    }
+    
+    // Add unsaved data to the existing data
+    if (Array.isArray(unsavedData)) {
+        existingData = existingData.concat(unsavedData);
+    } else if (typeof unsavedData === 'object') {
+        existingData.push(unsavedData);
+    } else {
+        console.error('Invalid unsaved data format');
+        return;
+    }
+
+    // Save the combined data back to the asset file
+    const newDataJSON = JSON.stringify(existingData, null, 2);
+    try {
+        fs.writeFileSync(assetFilePath, newDataJSON, 'utf8');
+        console.log('Asset data saved successfully');
+    } catch (error) {
+        console.error('Error saving asset data:', error);
+    }
   }
 }
 
