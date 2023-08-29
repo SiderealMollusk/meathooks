@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Crazy Kitty",
+    "nameSilliness": "a long and complicated name. use titles from all over the world.",
+    "age": 3,
+    "breed": "Maine Coon",
+    "skill": "Acrobatics",
+    "weakness": "Swimming",
+    "Personality": "Adventurous and mischievous",
+    "lastAdventure": "Explored a hidden alien archway",
+    "quest": "Find the mythical Catnip of Eternal Happiness"
+  },
+  {
+    "name": "a short boring name",
+    "nameSilliness": "0",
+    "age": 5,
+    "breed": "Siamese",
+    "skill": "sneaking",
+    "weakness": "swimming",
+    "Personality": "playful and mischievous",
+    "lastAdventure": "exploring an asteroid belt",
+    "quest": "finding a new planet to call home"
+  }
+]
