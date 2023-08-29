@@ -1,35 +1,24 @@
 [
   {
-    "name": "Fluffy",
-    "nameSilliness": 1,
+    "name": "Crazy Kitty",
+    "nameSilliness": "a long and complicated name. use titles from all over the world.",
     "age": 3,
-    "breed": "Persian",
-    "skill": "Flying",
+    "breed": "Maine Coon",
+    "skill": "Acrobatics",
     "weakness": "Swimming",
     "Personality": "Adventurous and mischievous",
-    "lastAdventure": "Exploring an abandoned space station",
-    "quest": "Retrieve a precious artifact from a distant planet"
+    "lastAdventure": "Explored a hidden alien archway",
+    "quest": "Find the mythical Catnip of Eternal Happiness"
   },
   {
     "name": "a short boring name",
-    "nameSilliness": 0,
-    "age": 2,
+    "nameSilliness": "0",
+    "age": 5,
     "breed": "Siamese",
-    "skill": "climbing",
+    "skill": "sneaking",
     "weakness": "swimming",
-    "Personality": "curious and mischievous",
-    "lastAdventure": "exploring an abandoned spaceship",
-    "quest": "finding the legendary catnip treasure"
-  },
-  {
-    "name": "a short boring name",
-    "nameSilliness": 0,
-    "age": 3,
-    "breed": "Siamese",
-    "skill": "Jumping high",
-    "weakness": "Swimming",
-    "Personality": "Adventurous and mischievous",
-    "lastAdventure": "Exploring an abandoned spaceship",
-    "quest": "Finding the lost treasure of Meowland"
+    "Personality": "playful and mischievous",
+    "lastAdventure": "exploring an asteroid belt",
+    "quest": "finding a new planet to call home"
   }
 ]

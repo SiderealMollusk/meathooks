@@ -1,0 +1,9 @@
+look
+establish
+move
+
+Ok so we have entities.
+some are locations, some are charactors, some are items
+
+
+1 check if input is a command
