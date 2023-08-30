@@ -19,6 +19,6 @@ module.exports = {
   },
   handleInputmatch: function handleInputmatch(obj) {},
   buildPrompt : function buildPrompt(args) {
-    return `You are now the game master. I am a character in your game. I look at the ${args.target}. Describe what I see.`
+    return ` I look at the ${args.target}. Describe what I see.`
   }
 }
