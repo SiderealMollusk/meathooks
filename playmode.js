@@ -4,6 +4,7 @@ const { API_CHATGP } = require('./config');
 const { CommandRequest } = require('./playmode/commandRequest.js');
 const userCommands = require('./playmode/userCommands/index.js')(); // must be invoked because dynamic import
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
+const {systemMessages} = require('./playmode/systemMessages.js');
 const { analyzeInput } = require('./playmode/analyzeInput.js');
 const { get } = require('http');
 const rl = readline.createInterface({
@@ -13,29 +14,38 @@ const rl = readline.createInterface({
 
 async function startChat() {
   rl.question('You: ', async (userInput) => {
+    //Get Raw Input
     if (userInput.toLowerCase() === 'exit') {
       rl.close();
       return;
     }
-    let commandRequest = new CommandRequest(userInput);
+
+    //Raw Input to chatGPT for function call
     console.log("Analyzing input");
+    let commandRequest = new CommandRequest(userInput);
     commandRequest = await analyzeInput(commandRequest);
-    const userConfirmation = await getConfirmation(commandRequest);
-    if (!userConfirmation) {
-      console.log("Okay, let's try again.");
-      startChat(); // Start over if user says "n"
-      return;
-    }
+    let userConfirmation = await confirmCommand(commandRequest);
+    continueCommand(userConfirmation);
 
+    //Call to LLM for narration
     const response = await sendAPIRequest(commandRequest);
-
     console.log('ChatGPT:', response);
+    userConfirmation = await acceptResult(commandRequest);
+    continueCommand(userConfirmation);
 
+    //Update State
+    console.log('State updated.');
     startChat(); // Continue the conversation
   });
 }
-
-async function getConfirmation(commandRequest) {
+function continueCommand(userConfirmation){
+  if (!userConfirmation) {
+    console.log("Okay, let's try again.");
+    startChat(); // Start over if user says "n"
+    return;
+  }
+}
+async function confirmCommand(commandRequest) {
   return new Promise((resolve) => {
     const args = commandRequest.args;
     const str = commandRequest.command.getConfirmationMessage(args);
@@ -48,7 +58,7 @@ async function getConfirmation(commandRequest) {
         process.exit(0);
       } else {
         console.log("Please type 'y' or 'n'");
-        resolve(getConfirmation(commandRequest)); // Repeat the prompt
+        resolve(confirmCommand(commandRequest)); // Repeat the prompt
       }
     });
   });
@@ -56,19 +66,20 @@ async function getConfirmation(commandRequest) {
 
 const sendAPIRequest = async function (commandRequest) {
   const args = commandRequest.args;
+  //should also build the messages argument
+  let messages = [];
+  messages = messages.concat(systemMessages.voiceNarrator);
+  //messages.push(historyMessages); Do this naively as soon as you can
   const prompt = commandRequest.command.buildPrompt(args);
+  messages.push({ role: 'user', content: prompt });
+
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios.post(
         apiUrl,
         {
           model: 'gpt-3.5-turbo', // Use the appropriate model
-          messages: [
-            {
-              role: 'user',
-              content: prompt // User message or prompt
-            }
-          ]
+          messages: messages
         },
         {
           headers: {
@@ -83,6 +94,21 @@ const sendAPIRequest = async function (commandRequest) {
     }
   });
 };
+
+async function acceptResult(commandRequest) {
+  return new Promise((resolve) => {
+    rl.question('Accept Result? (y/n): ', (answer) => {
+      if (answer.toLowerCase() === 'y') {
+        resolve(true);
+      } else if (answer.toLowerCase() === 'n') {
+        resolve(false);
+      } else {
+        console.log("Please type 'y' or 'n'");
+        resolve(acceptResult(commandRequest)); // Repeat the prompt
+      }
+    });
+  });
+}
 
 console.log('ChatGPT Terminal App');
 console.log('Type "exit" to quit the chat.');

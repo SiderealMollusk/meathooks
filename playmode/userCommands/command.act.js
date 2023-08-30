@@ -2,28 +2,36 @@ module.exports = {
   name: 'act',
   signature:   {
     name: 'act',
-    description: 'As a player character, take an action that will update the game state.',
+    description: 'A broad default function for handling any kind of action.',
     parameters: {
       type: 'object',
       properties: {
-        action: {
+        mainVerb: {
           type: 'string',
-          description: 'the action the player wants to take'
+          description: 'the main verb from the players input'
         },
-        target: {
+        directObject: {
           type: 'string',
-          bool: 'Does the players action require a target?',
-          description: 'Who or want the player wants to act appon'
+          description: 'If the main verb takes a direct object, this is the direct object. should be a noun phrase. Can be null'
+        },
+        indirectObject: {
+          type: 'string',
+          description: 'If the main verb takes an indirect object, this is the indirect object. should be a noun phrase. Can be null'
+        },
+        playerIntent: {
+          type: 'string',
+          description: 'summerize the players goal briefly.'
         }
       },
       required: ['object']
     }
   },
-  getConfirmationMessage(args){
-    return `Do you want to ${args.action} the ${args.target}.`
+  getConfirmationMessage(args) {
+    const argsString = JSON.stringify(args);
+    return `Freeform action with ${argsString}.`;
   },
   handleInputmatch: function handleInputmatch(inputString) {},
   buildPrompt : function buildPrompt(args) {
-    return `You are now the game master. I am a character in your game. I atempt to ${args.action} the ${args.target}. Describe what the results.`
+    return `I atempt to ${args.mainVerb} the ${args.directObject}. Describe what the results.`
   }
 }
