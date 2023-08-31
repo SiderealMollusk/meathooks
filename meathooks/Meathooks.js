@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const {MKResult, MKLLMQuest} = require('./DataClasses.js');
+const {MKResult, MKLLMRequest} = require('./DataClasses.js');
 const extractJson = require('extract-json-from-string');
 const MKOpenAI = require('./MKOpenAI.js');
 
@@ -27,7 +27,7 @@ class Meathooks {
       return new MKResult({
         action: 'createProject',
         success: false,
-        message: 'Project not created because it all ready exists.'
+        message: 'Project not created because it already exists.'
       });
     }
 
