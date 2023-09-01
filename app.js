@@ -1,14 +1,16 @@
 // This is not a real app.
 // It exists to call the meathooks functions easy from the commandline.
 const {Meathooks, MKResult} = require('./meathooks/Meathooks');
-const projectsDir = './projects'; // Replace with your projects directory
+const projectsDir = './projects';
 const meathooks = new Meathooks(projectsDir);
 let res;
+
+res = meathooks.setActiveProject('SaveTheCat'); // .. OR this
+console.log(res.message);
 
 async function generateCat() {
   let res;
 
-  // Create a new project
   res = meathooks.setActiveProject('SaveTheCats');
   console.log(res.message);
   

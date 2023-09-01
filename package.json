@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha --recursive meathooks/tests"
+    "test": "mocha --recursive meathooks/tests",
+    "client": "node ./meathooks-cli/meathooks-cli.js"
   },
   "devDependencies": {
     "chai": "^4.3.7",
