@@ -1,4 +1,4 @@
-const { alphaChoices, alphabate, PromptAndApprove } = require("./meathooks-cli-utils.js");
+const { alphaChoices, alphabate, PromptAndApprove, killApp } = require("./meathooks-cli-utils.js");
 console.log({ alphaChoices, alphabate, PromptAndApprove });
 
 async function mainMenu(ctx) {
@@ -6,18 +6,14 @@ async function mainMenu(ctx) {
         a: {label: "quickload", fn: stub},
         b: {label: "Start a new project", fn: startNewProject},
         c: {label: "Load an existing project", fn: loadExistProject},
-        d: {label: "Exit", fn: this.exitApp}
+        d: {label: "Exit", fn: killApp}
     }
     const choice = await alphaChoices(ctx,choices);
     return choices[choice].fn;
 }
-async function exitApp(ctx){
-    console.log("Exiting");
-    process.exit(0);
-}
 function stub(){
     console.log("Our stub means death");
-    exitApp();
+    killApp();
 }
 async function startNewProject(ctx){
     let nameApproved = false;
@@ -28,12 +24,12 @@ async function startNewProject(ctx){
                 resolve(answer);
             });
         });
-        nameApproved = await PromptAndApprove("You entered "+projectName+". Is this correct?");
+        nameApproved = await PromptAndApprove(ctx,"You entered "+projectName+". Is this correct?");
     }
     let res = ctx.meathooks.createProject(projectName);
     console.log(res.message);
     if(res.message.includes("already exists")){
-        let shouldSwitch = await PromptAndApprove("Would you like to set "+projectName + " as your active project?");
+        let shouldSwitch = await PromptAndApprove(ctx,"Would you like to set "+projectName + " as your active project?");
         if(shouldSwitch){ 
             res = ctx.meathooks.setActiveProject(projectName);
             console.log(res.message);
@@ -77,14 +73,13 @@ async function loadExistProject(ctx) {
 }
 async function projectActivated(ctx) {
     return new Promise(async (resolve) => {
-        let approval = await PromptAndApprove("Enter Playmode?");
+        let approval = await PromptAndApprove(ctx,"Enter Playmode?");
         resolve(approval ? playmode : mainMenu);
     });
 }
 
 module.exports = {
     mainMenu,
-    exitApp,
     stub,
     startNewProject,
     loadExistProject,

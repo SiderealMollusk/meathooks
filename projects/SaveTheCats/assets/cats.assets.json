@@ -20,5 +20,16 @@
     "Personality": "playful and mischievous",
     "lastAdventure": "exploring an asteroid belt",
     "quest": "finding a new planet to call home"
+  },
+  {
+    "name": "Whiskers",
+    "nameSilliness": "a silly random name",
+    "age": 3,
+    "breed": "Siamese",
+    "skill": "Sneaking into small spaces",
+    "weakness": "Swimming",
+    "Personality": "Mischievous and curious",
+    "lastAdventure": "Exploring an abandoned spaceship",
+    "quest": "To find the legendary mouse-shaped treasure"
   }
 ]

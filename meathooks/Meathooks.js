@@ -70,11 +70,14 @@ class Meathooks {
 
   /// <summary> Lists all available projects in the projects directory. </summary>
   listProjects() {
+    const fullPath = path.resolve(__dirname, this.projectsDir);
+    console.log('\x1b[31m%s\x1b[0m', fullPath); // \x1b[31m sets text color to red, \x1b[0m resets color
     const projectNames = fs.readdirSync(this.projectsDir, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name);
 
     let data = {projectsDir: this.projectsDir,projects: projectNames, activeProject: this.activeProject};
+    console.log('\x1b[31m%s\x1b[0m', data.projects)
     return new MKResult({
       action: 'listProjects',
       success: true,
@@ -82,6 +85,8 @@ class Meathooks {
       data: data
     });
   }
+
+  
 
 
 

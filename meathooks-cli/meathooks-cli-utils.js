@@ -1,4 +1,4 @@
-function YesNoPromise(question) {
+function YesNoPromise(ctx,question) {
   return new Promise((resolve, reject) => {
     ctx.rl.question(`${question} (y/n) `, userInput => {
       if (userInput === 'y') {
@@ -15,9 +15,9 @@ async function killApp(ctx){
   console.log("Exiting");
   process.exit(0);
 }
-async function PromptAndApprove(question) {
+async function PromptAndApprove(ctx,question) {
   while (true) {
-    const userChoice = await YesNoPromise(question);
+    const userChoice = await YesNoPromise(ctx,question);
     
     if (userChoice !== null) {
       return userChoice;
